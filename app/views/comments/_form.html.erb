@@ -1,0 +1,19 @@
+<%= form_for([@article, @article.comments.build]) do |f| %>
+  <% if flash[:error].present? %>
+    <div style="color: red;"><%= flash[:error].join(', ') %></div>
+    <br>
+  <% end %>
+  <table>
+    <tr>
+      <td><strong>Author:</strong></td>
+      <td><%= f.text_field :commenter %></td>
+    </tr>
+    <tr>
+      <td><strong>Comment:</strong></td>
+      <td><%= f.text_area :body %></td>
+    </tr>
+    <tr>
+      <td><%= f.submit %></td>
+    </tr>
+  </table>
+<% end %>

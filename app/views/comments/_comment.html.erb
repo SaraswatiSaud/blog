@@ -1,0 +1,13 @@
+<table>
+  <tr>
+    <th>Author: </th>
+    <td><%= comment.commenter %></td>
+  </tr>
+  <tr>
+    <th>Comment: </th>
+    <td><%= comment.body %></td>
+    <td><%= link_to 'Delete', [comment.article, comment],
+                              method: :delete,
+                              data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+</table>
