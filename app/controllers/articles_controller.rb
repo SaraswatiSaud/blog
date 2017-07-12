@@ -21,6 +21,12 @@ class ArticlesController < ApplicationController
 
   def index
     @articles = Article.all.order(id: :desc)
+
+    respond_to do |format|
+      format.html
+      format.js
+      format.json { render json: @articles }
+    end
   end
 
   def edit
