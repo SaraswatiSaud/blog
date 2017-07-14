@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Article, type: :model do
   before(:each) do
-    @user = User.create(email: 'test@example.com', password: '12345678')
+    @user = User.create(email: 'test@example.com', password: '123456789')
     @article = Article.new(title: 'Abcdef', text: 'Hello', user_id: @user.id)
   end
 
