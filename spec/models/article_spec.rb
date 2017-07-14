@@ -40,6 +40,9 @@ RSpec.describe Article, type: :model do
     expect(@article.user).to eq @user
   end
 
-  # it 'has many comments'
+  it 'has many comments' do
+    expect(@article.comments).to eq([])
+  end
+  
   # it 'destroys comments if deleted'
 end
