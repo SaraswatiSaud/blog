@@ -41,8 +41,22 @@ RSpec.describe Article, type: :model do
   end
 
   it 'has many comments' do
-    expect(@article.comments).to eq([])
+    @article.save
+    article2 = Article.create(title: 'Second Article', text: 'Hello this is second.', user_id: @user.id)
+    c1 = Comment.create(commenter: 'Ram', body: 'Testing123', article_id: @article.id)
+    c2 = Comment.create(commenter: 'John', body: 'Testing', article_id: @article.id)
+    c3 = Comment.create(commenter: 'John', body: 'Testing', article_id: article2.id)
+
+    expect(@article.comments).to include(c1, c2)
+    expect(@article.comments).to_not include(c3)
   end
-  
-  # it 'destroys comments if deleted'
+
+  it 'destroys comments if deleted' do
+    @article.save
+    c1 = Comment.create(commenter: 'Ram', body: 'Testing123', article_id: @article.id)
+
+    expect(@article.comments).to include(c1)
+    @article.destroy
+    expect(@article.comments).to_not include(c1)
+  end
 end
