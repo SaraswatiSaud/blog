@@ -26,6 +26,18 @@ RSpec.describe Article, type: :model do
     expect(@article).to_not be_valid
   end
 
+  it 'title is unique per user' do
+    # same user with same title
+    @article.save
+    @article2 = Article.new(title: @article.title, text: 'Hi555555', user_id: @user.id)
+    expect(@article2).to_not be_valid
+
+    # different user with same title
+    user2 = User.create(email: 'test1@example.com', password: '12345678')
+    @article2.user_id = user2.id
+    expect(@article2).to be_valid
+  end
+
   it 'is invalid without text' do
     @article.text = nil
     expect(@article).to_not be_valid
