@@ -1,31 +1,47 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  before(:each) do
-    @user = User.create(email: 'test@example.com', password: '123456789')
+  it 'has a valid factory' do
+    expect(FactoryGirl.build(:user)).to be_valid
   end
 
   it 'is valid with email and password' do
-    expect(@user).to be_valid
+    user = FactoryGirl.build(:user, email: 'admin@example.com', password: 'password')
+    expect(user).to be_valid
   end
 
   it 'is invalid without email' do
-    @user.email = nil
-    expect(@user).to_not be_valid
+    user = FactoryGirl.build(:user, email: nil)
+    user.valid?
+    expect(user.errors[:email]).to include("can't be blank")
   end
 
   it 'is invalid without password' do
-    @user.password = nil
-    expect(@user).to_not be_valid
+    user = FactoryGirl.build(:user, password: nil)
+    user.valid?
+    expect(user.errors[:password]).to include("can't be blank")
   end
 
   it 'is invalid with a duplicate email address' do
-    user = User.new(email: 'test@example.com', password: '123456789')
+    FactoryGirl.create(:user, email: "admin@example.com")
+    user = FactoryGirl.build(:user, email: "admin@example.com")
     user.valid?
-    expect(user.errors[:email]).to include('has already been taken')
+    expect(user.errors[:email]).to include("has already been taken")
   end
 
   it 'has many articles' do
-    expect(@user.articles).to eq([])
+    user = User.create(email: 'admin@example.com', password: 'password')
+    a1 = Article.create(title: 'Article 1', text: 'article1', user_id: user.id)
+    a2 = Article.create(title: 'Article 2', text: 'article2', user_id: user.id)
+    expect(user.articles).to include(a1, a2)
+  end
+
+  it 'destroys articles if deleted' do
+    user = User.create(email: 'admin@example.com', password: 'password')
+    c1 = Article.create(title: 'Article 1', text: 'article1', user_id: user.id)
+
+    expect(user.articles).to include(c1)
+    user.destroy
+    expect(user.articles).to_not include(c1)
   end
 end

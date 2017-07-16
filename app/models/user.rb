@@ -6,5 +6,5 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: { scope: :email }
   validates :password, presence: true
-  has_many :articles
+  has_many :articles, dependent: :destroy
 end
