@@ -2,9 +2,13 @@ require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
   before(:each) do
-    @user = User.create(email: 'test@example.com', password: '12345678')
-    @article = Article.create(title: 'Abcdef', text: 'Hello', user_id: @user.id)
-    @comment = Comment.new(commenter: 'Pintoo', body: 'This article is awesome.', article_id: @article.id)
+    @user = FactoryGirl.create(:user)
+    @article = FactoryGirl.create(:article, user_id: @user.id)
+    @comment = FactoryGirl.build(:comment, article_id: @article.id)
+  end
+
+  it 'has a valid factory' do
+    expect(@comment).to be_valid
   end
 
   it 'is valid with commenter, body, article_id' do

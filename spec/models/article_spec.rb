@@ -2,8 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Article, type: :model do
   before(:each) do
-    @user = User.create(email: 'test@example.com', password: '123456789')
-    @article = Article.new(title: 'Abcdef', text: 'Hello', user_id: @user.id)
+    @user = FactoryGirl.create(:user)
+    @article = FactoryGirl.build(:article)
+  end
+
+  it 'has a valid factory' do
+    expect(@article).to be_valid
   end
 
   it 'is valid with title, text, user_id' do
@@ -29,11 +33,12 @@ RSpec.describe Article, type: :model do
   it 'title is unique per user' do
     # same user with same title
     @article.save
-    @article2 = Article.new(title: @article.title, text: 'Hi555555', user_id: @user.id)
-    expect(@article2).to_not be_valid
+    @article2 = FactoryGirl.build(:article, title: @article.title)
+    @article2.valid?
+    expect(@article2.errors[:title]).to include('has already been taken')
 
     # different user with same title
-    user2 = User.create(email: 'test1@example.com', password: '12345678')
+    user2 = FactoryGirl.create(:user)
     @article2.user_id = user2.id
     expect(@article2).to be_valid
   end
@@ -66,7 +71,7 @@ RSpec.describe Article, type: :model do
 
   it 'destroys comments if deleted' do
     @article.save
-    c1 = Comment.create(commenter: 'Ram', body: 'Testing123', article_id: @article.id)
+    c1 = FactoryGirl.create(:comment, article_id: @article.id)
 
     expect(@article.comments).to include(c1)
     @article.destroy
