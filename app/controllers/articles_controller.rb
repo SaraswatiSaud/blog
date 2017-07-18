@@ -17,6 +17,11 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @article }
+    end
   end
 
   def index
@@ -33,6 +38,7 @@ class ArticlesController < ApplicationController
   end
 
   def update
+    raise 'hi'.inspect
     if @article.update(article_params)
       redirect_to @article
     else
