@@ -17,4 +17,19 @@ RSpec.describe ArticlesController, type: :controller do
       expect(response).to have_http_status '200'
     end
   end
+
+  describe '#show' do
+    context 'as an authorized user' do
+      before do
+        @user = FactoryGirl.create(:user)
+        @article = FactoryGirl.create(:article, user_id: @user.id)
+        sign_in @user
+      end
+
+      it 'responds successfully' do
+        get :show, params: { id: @article.id }
+        expect(response).to be_success
+      end
+    end
+  end
 end
