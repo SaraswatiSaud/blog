@@ -38,7 +38,6 @@ class ArticlesController < ApplicationController
   end
 
   def update
-    raise 'hi'.inspect
     if @article.update(article_params)
       redirect_to @article
     else
