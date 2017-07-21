@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Article, type: :model do
   before(:each) do
     @user = FactoryGirl.create(:user)
-    @article = FactoryGirl.build(:article)
+    @article = FactoryGirl.build(:article, user_id: @user.id)
   end
 
   it 'has a valid factory' do
@@ -33,11 +33,15 @@ RSpec.describe Article, type: :model do
   it 'title is unique per user' do
     # same user with same title
     @article.save
-    @article2 = FactoryGirl.build(:article, title: @article.title)
-    @article2.valid?
-    expect(@article2.errors[:title]).to include('has already been taken')
+    article2 = Article.new(title: @article.title, text: @article.text, user_id: @user.id)
+    article2.valid?
+    expect(article2.errors[:title]).to include('has already been taken')
+  end
 
+  it 'title is same for different user' do
     # different user with same title
+    @article.save
+    @article2 = FactoryGirl.build(:article, title: @article.title)
     user2 = FactoryGirl.create(:user)
     @article2.user_id = user2.id
     expect(@article2).to be_valid
@@ -63,7 +67,7 @@ RSpec.describe Article, type: :model do
     c1 = FactoryGirl.create(:comment, article: article)
     c2 = FactoryGirl.create(:comment, article: article)
 
-    c3 = FactoryGirl.create(:comment, article: FactoryGirl.create(:article))
+    c3 = FactoryGirl.create(:comment, article: FactoryGirl.create(:article, user_id: @user.id))
 
     expect(article.comments).to include(c1, c2)
     expect(article.comments).to_not include(c3)
