@@ -1,35 +1,34 @@
 require 'rails_helper'
 
 RSpec.describe ArticlesController, type: :controller do
-  describe '#index' do
-    before do
+  describe "#index" do
+    before(:each) do
       @user = FactoryGirl.create(:user)
-      sign_in @user
     end
 
-    it 'responds successfully' do
+    it "responds successfully" do
+      sign_in @user
       get :index
       expect(response).to be_success
     end
 
-    it 'returns a 200 response' do
+    it "returns a 200 response" do
+      sign_in @user
       get :index
-      expect(response).to have_http_status '200'
+      expect(response).to have_http_status "200"
     end
   end
 
-  describe '#show' do
-    context 'as an authorized user' do
-      before do
-        @user = FactoryGirl.create(:user)
-        @article = FactoryGirl.create(:article, user_id: @user.id)
-        sign_in @user
-      end
+  describe "#show" do
+    before do
+      @user = FactoryGirl.create(:user)
+      @article = FactoryGirl.create(:article, user_id: @user.id)
+    end
 
-      it 'responds successfully' do
-        get :show, params: { id: @article.id }
-        expect(response).to be_success
-      end
+    it "responds successfully" do
+      sign_in @user
+      get :show, params: { id: @article.id }
+      expect(response).to be_success
     end
   end
 
@@ -67,7 +66,7 @@ RSpec.describe ArticlesController, type: :controller do
     context 'as a guest' do
       before do
         @user = FactoryGirl.create(:user)
-        @article = FactoryGirl.create(:article)
+        @article = FactoryGirl.create(:article, user: @user)
       end
 
       it 'returns a 302 response' do
@@ -116,6 +115,22 @@ RSpec.describe ArticlesController, type: :controller do
         sign_in @user
         patch :update, params: { id: @article.id, article: article_params }
         expect(@article.reload.title).to eq "New article Name"
+      end
+    end
+  end
+
+  describe '#destroy' do
+    context 'as an authorized user' do
+      before do
+        @user = FactoryGirl.create(:user)
+        @article = FactoryGirl.create(:article, user_id: @user.id)
+        sign_in @user
+      end
+
+      it 'deletes an article' do
+        expect {
+          delete :destroy, params: { id: @article.id }
+        }.to change(@user.articles, :count).by(-1)
       end
     end
   end
