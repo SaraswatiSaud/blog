@@ -45,6 +45,26 @@ RSpec.describe ArticlesController, type: :controller do
           post :create, params: { article: article_params }
         }.to change(@user.articles, :count).by(1)
       end
+
+      context 'with valid attributes' do
+        it 'adds an article' do
+          article_params = FactoryGirl.attributes_for(:article)
+          sign_in @user
+          expect {
+            post :create, params: { article: article_params }
+          }.to change(@user.articles, :count).by(1)
+        end
+      end
+
+      context 'with invalid attributes' do
+        it 'doesnot adds an article' do
+          article_params = FactoryGirl.attributes_for(:article, :invalid)
+          sign_in @user
+          expect {
+            post :create, params: { article: article_params }
+          }.to_not change(@user.articles, :count)
+        end
+      end
     end
 
     context 'as a guest user' do
@@ -131,6 +151,26 @@ RSpec.describe ArticlesController, type: :controller do
         expect {
           delete :destroy, params: { id: @article.id }
         }.to change(@user.articles, :count).by(-1)
+      end
+    end
+
+    context 'as an unauthorized user' do
+      before do
+        @user = FactoryGirl.create(:user)
+        other_user = FactoryGirl.create(:user)
+        @article = FactoryGirl.create(:article, user_id: other_user.id)
+        sign_in @user
+      end
+
+      it 'doesnot delete the project' do
+        expect {
+          delete :destroy, params: { id: @article.id }
+        }.to_not change(Article, :count)
+      end
+
+      it 'redirects to dashboard' do
+        delete :destroy, params: { id: @article.id }
+        expect(response).to redirect_to articles_path
       end
     end
   end
