@@ -1,0 +1,7 @@
+$("#completed<%= @article.id %>").val(<%= !@article.completed? %>);
+
+<% if @article.completed? %>
+  $('#article<%= @article.id %>').addClass('completed');
+<% else %>
+  $('#article<%= @article.id %>').removeClass('completed');
+<% end %>
