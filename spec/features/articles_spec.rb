@@ -51,4 +51,11 @@ RSpec.feature 'Articles', type: :feature do
       click_link 'Destroy'
     }.to change(@user.articles, :count).by(-1)
   end
+
+  scenario 'user logout the page' do
+    article = FactoryGirl.create(:article, user: @user)
+    visit articles_path
+    click_link 'logout'
+    expect(page).to have_content 'Signed out successfully.'
+  end
 end
