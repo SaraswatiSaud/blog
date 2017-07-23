@@ -5,11 +5,11 @@
   <% end %>
   <table>
     <tr>
-      <td><strong>Author:</strong></td>
+      <td><strong><%= f.label :commenter %></strong></td>
       <td><%= f.text_field :commenter %></td>
     </tr>
     <tr>
-      <td><strong>Comment:</strong></td>
+      <td><strong><%= f.label :body %></strong></td>
       <td><%= f.text_area :body %></td>
     </tr>
     <tr>
