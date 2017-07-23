@@ -39,7 +39,7 @@ class ArticlesController < ApplicationController
 
   def update
     if @article.update(article_params)
-      redirect_to @article
+      redirect_to @article, notice: 'Article updated successfully.'
     else
       render 'edit'
     end
@@ -48,6 +48,11 @@ class ArticlesController < ApplicationController
   def destroy
     @article.destroy
     redirect_to articles_path
+  end
+
+  def completed
+    @article = Article.find(params[:article_id])
+    @article.update(completed: params[:value])
   end
 
   private

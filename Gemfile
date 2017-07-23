@@ -41,6 +41,7 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'rspec-rails', '~> 3.6.0'
   gem 'factory_girl_rails', '~> 4.8.0'
+  gem 'launchy', '~> 2.4.3'
 end
 
 group :development do
@@ -56,3 +57,4 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'devise', github: 'plataformatec/devise'
+gem 'jquery-rails'

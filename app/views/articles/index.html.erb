@@ -7,16 +7,18 @@
       <th>Title</th>
       <th>Description</th>
       <th>User</th>
+      <th>Compeleted</th>
       <th></th>
 
     </tr>
 
     <% @articles.each do |article| %>
-      <tr>
+      <tr <%= "id=article#{article.id}" %> <%= "class=completed" if article.completed? %>>
         <td><%= article.id %></td>
         <td><%= article.title %></td>
         <td><%= article.text %></td>
         <td><%= article.user.email %></td>
+        <td><%= check_box_tag "completed#{article.id}", !article.completed?, article.completed, onchange: "$.get('/articles/#{article.id}/completed/' + $(this).val());" %></td>
         <td>
           <%= link_to 'Show', article_path(article) %>
           <% if user_signed_in? && (current_user.id == article.user_id) %>
