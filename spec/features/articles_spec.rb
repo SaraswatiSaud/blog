@@ -21,6 +21,14 @@ RSpec.feature 'Articles', type: :feature do
     expect(page).to have_content 'Test Article'
   end
 
+  scenario 'user creates a show page'do
+    article = FactoryGirl.create(:article, user: @user)
+    visit articles_path
+    click_link 'Show'
+    expect(page).to have_content(article.title)
+    expect(page).to have_content(article.text)
+  end
+
   scenario 'user edits an article' do
     article = FactoryGirl.create(:article, user: @user)
 
@@ -33,5 +41,21 @@ RSpec.feature 'Articles', type: :feature do
 
     expect(article.reload.title).to eq 'Edited Article'
     expect(page).to have_content 'Article updated successfully.'
+  end
+
+  scenario 'user deletes an article' do
+    article = FactoryGirl.create(:article, user: @user)
+
+    expect {
+      visit articles_path
+      click_link 'Destroy'
+    }.to change(@user.articles, :count).by(-1)
+  end
+
+  scenario 'user logout the page' do
+    article = FactoryGirl.create(:article, user: @user)
+    visit articles_path
+    click_link 'logout'
+    expect(page).to have_content 'Signed out successfully.'
   end
 end
